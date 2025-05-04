@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>送给郭书涵的小网页</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 50px;
+      text-align: center;
+    }
+
+    .btn {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .content {
+      margin-top: 30px;
+      display: none;
+      font-size: 18px;
+      line-height: 1.6;
+      text-align: center; /* 讓內容和按鈕都置中 */
+    }
+
+    .show {
+      display: block;
+    }
+
+    .all-messages {
+      margin-top: 10px;
+      font-size: 15px;
+      color: gray;
+      display: none;
+    }
+
+    /* 讓「查看所有朋友的留言」按鈕和文字之間有 20px、並置中 */
+    .all-btn {
+      display: block;         /* 讓按鈕在新的一行 */
+      margin: 20px auto 0;   /* 與文字保持 20px 距離後，再自動置中 */
+    }
+
+    /* 打字機外觀 + 游標閃爍 */
+    .typewriter {
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: .15em solid #333;
+      margin: 0 auto;
+    }
+    .caret-blink {
+      animation: blink 0.75s step-end infinite;
+    }
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>送给郭书涵的小网页</h1>
+  <p>请选择你的心情：</p>
+  
+  <button class="btn" onclick="showContent('happy')">开心时打开</button>
+  <button class="btn" onclick="showContent('sad')">伤心时打开</button>
+  <button class="btn" onclick="showContent('miss')">想要亲近神时打开</button>
+  <button class="btn" onclick="showContent('faith')">需要信心時候打开</button>
+
+  <!-- 开心 -->
+  <div id="happy" class="content">
+    <p id="happy-text"></p>
+    <button class="btn all-btn" onclick="toggleAll('happy')">查看所有朋友的留言</button>
+    <div id="happy-all" class="all-messages"></div>
+  </div>
+
+  <!-- 伤心 -->
+  <div id="sad" class="content">
+    <p id="sad-text"></p>
+    <button class="btn all-btn" onclick="toggleAll('sad')">查看所有朋友的留言</button>
+    <div id="sad-all" class="all-messages"></div>
+  </div>
+
+  <!-- 想念 -->
+  <div id="miss" class="content">
+    <p id="miss-text"></p>
+    <button class="btn all-btn" onclick="toggleAll('miss')">查看所有朋友的留言</button>
+    <div id="miss-all" class="all-messages"></div>
+  </div>
+
+  <!-- 信念 -->
+  <div id="faith" class="content">
+    <p id="faith-text"></p>
+    <button class="btn all-btn" onclick="toggleAll('faith')">查看所有朋友的留言</button>
+    <div id="faith-all" class="all-messages"></div>
+  </div>
+
+  <script>
+    // 三組不同情境的朋友訊息
+    const messages = {
+      happy: [
+        // 用 <br> 來斷行，瀏覽器會自動換行
+        "约翰福音 15:11<br>这些事我已经对你们说了，是要叫我的喜乐存在你们心里，并叫你们的喜乐可以满足。<br><br>",
+        "诗篇 23:6<br>我一生一世必有恩惠慈爱随着我，我且要住在耶和华的殿中，直到永远。<br><br>",
+        "诗篇 23:6<br> 我一生一世必有恩惠慈爱随着我，我且要住在耶和华的殿中，直到永远。<br><br>",
+        "约翰福音 15:11<br> 这些事我已经对你们说了，是要叫我的喜乐存在你们心里，并叫你们的喜乐可以满足。<br><br>", 
+        "诗篇 23:6<br> 我一生一世必有恩惠慈爱随着我，我且要住在耶和华的殿中，直到永远。<br><br>",
+        "诗篇 16:8-11<br> 我将耶和华常摆在我面前，因他在我右边，我便不致摇动。因此，我的心欢喜，我的灵快乐；我的肉身也要安然居住。因为你必不将我的灵魂撇在阴间，也不叫你的圣者见朽坏。你必将生命的道路指示我。在你面前有满足的喜乐；在你右手中有永远的福乐。<br><br>",
+        "传道书 11:9-10<br> 年轻人啊，在年轻时要快乐，要在青春岁月里使自己的心欢畅。心里想做什么就去做，眼睛想看什么就去看。然而，要切记：上帝必照你所行的一切审判你。所以，你要抛开心中的烦恼和肉体的痛苦，因为青春年华转瞬即逝。<br><br>",
+        "诗篇 118:24<br> 这是耶和华所定的日子，我们在其中要高兴欢喜！<br><br>", 
+        "尼希米记 8:10<br> 你们不要忧愁，因靠耶和华而得的喜乐是你们的力量。<br><br>", 
+        "诗篇 100:1-2<br> 普天下当向耶和华欢呼！你们当乐意侍奉耶和华， 当来向他歌唱！<br><br>",
+        "腓立比书 4:4<br> 你们要靠主常常喜乐，我再说，你们要喜乐！<br><br>"
+
+      ],
+      sad: [
+      "罗马书 8:26<br>况且，我们软弱的时候，有圣灵帮助我们。我们不知道该怎样祷告，但圣灵亲自用说不出来的叹息替我们祈祷。<br><br>",
+      "诗篇 30:5b<br>他的恩典乃是一生之久。一宿虽然有哭泣，早晨便必欢呼。<br><br>",
+      "诗篇 23:4<br>我虽然行过死荫的幽谷，也不怕遭害，因为你与我同在；你的杖，你的竿，都安慰我。<br><br>",
+      "马太福音 11:28-30<br>凡劳苦担重担的人可以到我这里来，我就使你们得安息。我心里柔和谦卑，你们当负我的轭，学我的样式；这样，你们心里就必得享安息。因为我的轭是容易的，我的担子是轻省的。<br><br>",
+      "路加福音 12:6<br>五只麻雀不是只卖两个铜钱吗？但没有一只麻雀会被上帝遗忘。<br><br>",
+      "罗马书 8:35-39<br>谁能使我们与基督的爱隔绝呢？难道是患难吗？是困苦吗？是逼迫吗？是饥饿吗？是赤身露体吗？是危险吗？是刀剑吗？……无论是死，是生，是天使，是掌权的，是有能的，是现在的事，是将来的事，是高处的，是低处的，是别的受造之物，都不能叫我们与神的爱隔绝，这爱是在我们的主基督耶稣里的。<br><br>",
+      "诗篇 18:1-2<br>耶和华，我的力量啊，我爱你！耶和华是我的岩石，我的山寨，我的救主，我的神，我的磐石，我所投靠的。他是我的盾牌，是拯救我的角，是我的高台。<br><br>",
+      "诗篇 34:18<br>耶和华靠近伤心的人，拯救灵性痛悔的人。<br><br>",
+      "马太福音 5:4<br>哀恸的人有福了，因为他们必得安慰。<br><br>",
+      "启示录 21:4<br>神要擦去他们一切的眼泪，不再有死亡，也不再有悲哀、哭号、疼痛，因为以前的事都过去了。<br><br>",
+      "诗篇 147:3<br>祂医好伤心的人，裹好他们的伤处。<br><br>",
+      "哥林多后书 1:3-4<br>愿颂赞归与我们的主耶稣基督的父神，就是发慈悲的父，赐各样安慰的神；祂在我们一切患难中安慰我们，使我们能用神所赐的安慰去安慰那遭各样患难的人。<br><br>"
+
+      ],
+
+      miss: [
+      "雅各书 4:8<br>你们亲近神，神就必亲近你们。<br><br>",
+      "路加福音 11:9<br>我又告诉你们：你们祈求，就给你们；寻找，就寻见；叩门，就给你们开门。<br><br>",
+      "马太福音 6:33<br>你们要先求神的国和他的义，这些东西都要加给你们了。<br><br>",
+      "约翰福音 1:4-5<br>祂里面有生命，这生命是人类的光。光照进黑暗里，黑暗不能吞灭光。<br><br>",
+      "帖撒罗尼迦后书 3:16<br>愿赐平安的主随时随事亲自给你们平安！愿主常与你们众人同在！<br><br>",
+      "诗篇 27:4<br>有一件事，我曾求耶和华，我仍要寻求：就是一生一世住在耶和华的殿中，瞻仰祂的荣美，在祂的殿里求问。<br><br>",
+      "诗篇 73:28<br>但我亲近神是与我有益；我以主耶和华为我的避难所，好叫我述说祂一切的作为。<br><br>",
+      "约翰福音 15:5<br>我是葡萄树，你们是枝子。常在我里面的，我也常在他里面，这人就多结果子；因为离了我，你们就不能作什么。<br><br>",
+      "耶利米书 29:13<br>你们寻求我，若专心寻求我，就必寻见。<br><br>"
+      ],
+
+      faith: [
+        "约翰福音 20:29<br>你因看见了我才信；那没有看见就信的有福了。<br><br>",
+        "约书亚记 1:9<br>我岂没有吩咐你吗？你当刚强壮胆！不要惧怕，也不要惊惶；因为你无论往哪里去，耶和华你的神必与你同在。<br><br>",
+        "以赛亚书 41:9-10<br>你是我从地极所领来的，从地角所召来的，且对你说：“你是我的仆人，我拣选你，并不弃绝你。你不要害怕，因为我与你同在；不要惊惶，因为我是你的神。我必坚固你，我必帮助你，我必用我公义的右手扶持你。”<br><br>",
+        "路加福音 8:50<br>耶稣听见就对他说：“不要怕，只要信！她必得痊愈。”<br><br>",
+        "耶利米书 17:7-8<br>倚靠耶和华、以耶和华为可靠的，那人有福了！他必像树栽于水旁，在河边扎根，炎热来到，并不惧怕，叶子仍必青翠，在干旱之年毫无挂虑，而且结果不止。<br><br>",
+        "哥林多前书 10:13<br>你们所遇见的试探，无非是人所能受的。神是信实的，必不叫你们受试探过于所能受的；在受试探的时候，总要给你们开一条出路，使你们能忍受得住。<br><br>",
+        "罗马书 5:1-2<br>所以，我们既因信称义，就借着我们的主耶稣基督得以与神和好。我们又藉着祂，因信进入现在所站立的这恩典中，并且欢欢喜喜盼望神的荣耀。<br><br>",
+        "以赛亚书 54:10<br>大山可以挪开，小山可以迁移，但我的慈爱必不离开你，我平安的约也不会更改。这是怜悯你的耶和华说的。<br><br>",
+        "马可福音 11:24<br>所以我告诉你们，凡你们祷告祈求的，无论是什么，只要信是得着的，就必得着。<br><br>",
+        "希伯来书 11:1<br>信就是所望之事的实底，是未见之事的确据。<br><br>",
+        "马太福音 17:20<br>你们若有信心像一粒芥菜种，就是对这座山说：‘从这边挪到那边！’它也必挪去；并且你们没有一件不能作的事了。<br><br>",
+        "罗马书 10:17<br>可见信道是从听道来的，听道是从基督的话来的。<br><br>"
+      ]
+    };
+
+    /* 顯示隨機一句 + JS打字機效果 */
+    function showContent(type) {
+      // 先清除舊的顯示 & 動畫
+      document.querySelectorAll('.content').forEach(div => {
+        div.classList.remove('show');
+        const p = div.querySelector('p');
+        p.innerHTML = "";
+        p.classList.remove('typewriter', 'caret-blink');
+      });
+      document.querySelectorAll('.all-messages').forEach(el => el.style.display = 'none');
+
+      // 抽一則訊息
+      const container = document.getElementById(type);
+      const textEl = document.getElementById(`${type}-text`);
+      const msg = messages[type][Math.floor(Math.random() * messages[type].length)];
+
+      container.classList.add('show');
+
+      // 用 JS 模擬打字機（此處改用 substring 方式）
+      typeWriter(msg, textEl, 70); // 速度50ms/字，可自行調
+    }
+
+    /* 打字機效果：用 setInterval 逐字出現，並且用 innerHTML 解析 <br> */
+    function typeWriter(text, element, speed = 70) {
+      let index = 0;
+      element.innerHTML = "";
+      element.classList.add('typewriter', 'caret-blink');
+
+      const timer = setInterval(() => {
+        // 取前 index+1 個字，讓瀏覽器幫忙解析 <br> 標籤
+        element.innerHTML = text.substring(0, index + 1);
+        index++;
+        if (index >= text.length) {
+          clearInterval(timer);
+          // 打完後若要停止閃爍游標, 可在這裡加:
+          element.classList.remove('caret-blink');
+        }
+      }, speed);
+    }
+
+    /* 顯示/隱藏全部留言 */
+    function toggleAll(type) {
+      const container = document.getElementById(`${type}-all`);
+      if (container.style.display === 'block') {
+        container.style.display = 'none';
+      } else {
+        const all = messages[type].map(msg => `<div>• ${msg}</div>`).join('');
+        container.innerHTML = all;
+        container.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
